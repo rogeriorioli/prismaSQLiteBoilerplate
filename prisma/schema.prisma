@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data/database.db"
+}
+
+model User {
+  id         String       @id @default(uuid())
+  email      String       @unique
+  username   String       @unique
+  SkateParks SkateParks[]
+}
+
+model SkateParks {
+  id               String            @id @default(uuid())
+  parkname         String            @unique
+  latitude         String
+  longitude        String
+  userId           String
+  user             User              @relation(fields: [userId], references: [id])
+  SkateParksGalery SkateParkGalery[]
+  createdAt        DateTime          @default(now())
+}
+
+model SkateParkGalery {
+  id                String     @id @default(uuid())
+  images            String
+  skateParkGaleryid String
+  skatePark         SkateParks @relation(fields: [skateParkGaleryid], references: [id])
+}
